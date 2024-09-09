@@ -2,32 +2,112 @@ import "./OrderPage.css";
 import Header from "./Header";
 import { useState } from "react";
 
+const initialForm = {
+  isim: "",
+  size: "",
+  dough: "",
+  malzemeler: {
+    pepperoni: false,
+    tavuk: false,
+    misir: false,
+    sarimsak: false,
+    ananas: false,
+    sosis: false,
+    sogan: false,
+    biber: false,
+    kabak: false,
+    jambon: false,
+    domates: false,
+    jalepeno: false,
+  },
+};
 
-const initalForm ={
-  isim:"",
-  malzeme1 : "false",
-  malzeme2 : "false",
-  malzeme3 : "false",
-  malzeme4 : "false",
-  malzeme5 : "false",
-  malzeme6 : "false",
-  malzeme7 : "false",
-  malzeme8 : "false",
-  malzeme9 : "false",
-  malzeme10 : "false",
-  malzeme11 : "false",
-  malzeme12 : "false",
-}
+const malzemeList = [
+  "pepperoni",
+  "tavuk",
+  "misir",
+  "sarimsak",
+  "ananas",
+  "sosis",
+  "sogan",
+  "biber",
+  "kabak",
+  "jambon",
+  "domates",
+  "jalepeno",
+];
+
+const errorMessages = {
+  isim: "Lütfen geçerli bir ad giriniz.",
+  size: "Boyut seçiniz.",
+  dough: "Lütfen hamur tipini seçiniz.",
+  malzemeler: "En az 4 adet ve en fazla 10 adet seçim yapınız.",
+};
+
 export default function Order() {
+  const [form, setForm] = useState(initialForm);
+  const [errors, setErrors] = useState({
+    isim: false,
+    size: false,
+    dough: false,
+    malzemeler: false,
+  });
 
-const [form, setForm] = useState(initalForm)
+  const handleChange = (event) => {
+    const { name, value, type, checked } = event.target;
+    const isCheckbox = type === "checkbox";
 
+    if (isCheckbox) {
+      const updatedMalzemeler = {
+        ...form.malzemeler,
+        [name]: checked,
+      };
 
-const handleChange = (event) => {
-  let {name, value, type, checked} = event.target
-  value = type == "checkbox" ? checked : value
-  setForm({...form,[name]:value})
-}
+      const selectedCount =
+        Object.values(updatedMalzemeler).filter(Boolean).length;
+
+      const isMalzemeError = selectedCount < 4 || selectedCount > 10;
+
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        malzemeler: isMalzemeError,
+      }));
+
+      setForm({
+        ...form,
+        malzemeler: updatedMalzemeler,
+      });
+    } else {
+      setForm({
+        ...form,
+        [name]: value,
+      });
+    }
+
+    if (name === "isim") {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        isim: value.trim().length < 3,
+      }));
+    }
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    const formIsValid =
+      form.isim.trim().length >= 3 &&
+      form.size &&
+      form.dough &&
+      !errors.malzemeler;
+
+    if (formIsValid) {
+      setIsValid(true);
+    } else {
+      setIsValid(false);
+    }
+  };
+
   return (
     <>
       <Header />
@@ -48,21 +128,42 @@ const handleChange = (event) => {
           </p>
         </article>
 
-        <form>
+        <form onSubmit={handleSubmit}>
           <p>Boyut Seç *</p>
           <label>
-            <input name="size" type="radio" value="small" /> Küçük
+            <input
+              onChange={handleChange}
+              name="size"
+              type="radio"
+              value="kucuk"
+              checked={form.size === "kucuk"}
+            />{" "}
+            Küçük
           </label>
           <label>
-            <input name="size" type="radio" value="medium" /> Orta
+            <input
+              onChange={handleChange}
+              name="size"
+              type="radio"
+              value="orta"
+              checked={form.size === "orta"}
+            />{" "}
+            Orta
           </label>
           <label>
-            <input name="size" type="radio" value="large" /> Büyük
+            <input
+              onChange={handleChange}
+              name="size"
+              type="radio"
+              value="buyuk"
+              checked={form.size === "buyuk"}
+            />{" "}
+            Büyük
           </label>
 
           <p>Hamur Seç *</p>
           <label>
-            <select name="dough">
+            <select onChange={handleChange} name="dough" value={form.dough}>
               <option value="">Hamur Kalınlığı</option>
               <option value="ince">İnce</option>
               <option value="kalın">Kalın</option>
@@ -71,56 +172,41 @@ const handleChange = (event) => {
 
           <p>Ek Malzemeler</p>
           <p>En az 4 en fazla 10 malzeme seçebilirsiniz. 5tl</p>
-          <label>
-            <input type="checkbox" name="malzeme1" checked={form.malzeme} onChange={handleChange}/> Pepperoni
-          </label>
-          <label>
-            <input type="checkbox" name="malzeme2"checked={form.malzeme} onChange={handleChange}/> Tavuk Izgara
-          </label>
-          <label>
-            <input type="checkbox" name="malzeme3" checked={form.malzeme} onChange={handleChange}/> Mısır
-          </label>
-          <label>
-            <input type="checkbox" name="malzeme4" checked={form.malzeme} onChange={handleChange}/> Sarımsak
-          </label>
-          <label>
-            <input type="checkbox" name="malzeme5" checked={form.malzeme} onChange={handleChange}/> Ananas
-          </label>
-          <label>
-            <input type="checkbox" name="malzeme6" checked={form.malzeme} onChange={handleChange}/> Sosis
-          </label>
-          <label>
-            <input type="checkbox" name="malzeme7" checked={form.malzeme} onChange={handleChange}/> Soğan
-          </label>
-          <label>
-            <input type="checkbox" name="malzeme8" checked={form.malzeme} onChange={handleChange}/> Biber
-          </label>
-          <label>
-            <input type="checkbox" name="malzeme9" checked={form.malzeme} onChange={handleChange}/> Kabak
-          </label>
-          <label>
-            <input type="checkbox" name="malzeme10" checked={form.malzeme} onChange={handleChange}/> Kanada Jambonu
-          </label>
-          <label>
-            <input type="checkbox" name="malzeme11" checked={form.malzeme} onChange={handleChange}/> Domates
-          </label>
-          <label>
-            <input type="checkbox" name="malzeme12" checked={form.malzeme} onChange={handleChange}/> Jalepeno
-          </label>
+          {malzemeList.map((malzeme, index) => (
+            <label key={index}>
+              <input
+                type="checkbox"
+                name={malzeme}
+                checked={form.malzemeler[malzeme]}
+                onChange={handleChange}
+              />
+              {malzeme.charAt(0).toUpperCase() + malzeme.slice(1)}
+            </label>
+          ))}
 
           <p>İsminiz ?</p>
           <label>
-            <input type="text" name="isim" placeholder="İsminizi girin" />
+            <input
+              type="text"
+              name="isim"
+              placeholder="İsminizi girin"
+              onChange={handleChange}
+              value={form.isim}
+            />
+            {errors.isim && <span>{errorMessages.isim}</span>}
           </label>
 
           <p>Sipariş Notu</p>
           <label>
             <textarea
+              onChange={handleChange}
               name="note"
               placeholder="Siparişine eklemek istediğin bir not var mı ?"
+              value={form.note}
             ></textarea>
           </label>
 
+          {errors.malzemeler && <p>{errorMessages.malzemeler}</p>}
           <button type="submit">Sipariş Ver</button>
         </form>
       </main>
