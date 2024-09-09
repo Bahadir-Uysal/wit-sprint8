@@ -1,7 +1,33 @@
 import "./OrderPage.css";
 import Header from "./Header";
+import { useState } from "react";
 
+
+const initalForm ={
+  isim:"",
+  malzeme1 : "false",
+  malzeme2 : "false",
+  malzeme3 : "false",
+  malzeme4 : "false",
+  malzeme5 : "false",
+  malzeme6 : "false",
+  malzeme7 : "false",
+  malzeme8 : "false",
+  malzeme9 : "false",
+  malzeme10 : "false",
+  malzeme11 : "false",
+  malzeme12 : "false",
+}
 export default function Order() {
+
+const [form, setForm] = useState(initalForm)
+
+
+const handleChange = (event) => {
+  let {name, value, type, checked} = event.target
+  value = type == "checkbox" ? checked : value
+  setForm({...form,[name]:value})
+}
   return (
     <>
       <Header />
@@ -46,45 +72,45 @@ export default function Order() {
           <p>Ek Malzemeler</p>
           <p>En az 4 en fazla 10 malzeme seçebilirsiniz. 5tl</p>
           <label>
-            <input type="checkbox" value="pepperoni" /> Pepperoni
+            <input type="checkbox" name="malzeme1" checked={form.malzeme} onChange={handleChange}/> Pepperoni
           </label>
           <label>
-            <input type="checkbox" value="chicken" /> Tavuk Izgara
+            <input type="checkbox" name="malzeme2"checked={form.malzeme} onChange={handleChange}/> Tavuk Izgara
           </label>
           <label>
-            <input type="checkbox" value="corn" /> Mısır
+            <input type="checkbox" name="malzeme3" checked={form.malzeme} onChange={handleChange}/> Mısır
           </label>
           <label>
-            <input type="checkbox" value="garlic" /> Sarımsak
+            <input type="checkbox" name="malzeme4" checked={form.malzeme} onChange={handleChange}/> Sarımsak
           </label>
           <label>
-            <input type="checkbox" value="pineapple" /> Ananas
+            <input type="checkbox" name="malzeme5" checked={form.malzeme} onChange={handleChange}/> Ananas
           </label>
           <label>
-            <input type="checkbox" value="sausage" /> Sosis
+            <input type="checkbox" name="malzeme6" checked={form.malzeme} onChange={handleChange}/> Sosis
           </label>
           <label>
-            <input type="checkbox" value="onion" /> Soğan
+            <input type="checkbox" name="malzeme7" checked={form.malzeme} onChange={handleChange}/> Soğan
           </label>
           <label>
-            <input type="checkbox" value="pepper" /> Biber
+            <input type="checkbox" name="malzeme8" checked={form.malzeme} onChange={handleChange}/> Biber
           </label>
           <label>
-            <input type="checkbox" value="zucchini" /> Kabak
+            <input type="checkbox" name="malzeme9" checked={form.malzeme} onChange={handleChange}/> Kabak
           </label>
           <label>
-            <input type="checkbox" value="ham" /> Kanada Jambonu
+            <input type="checkbox" name="malzeme10" checked={form.malzeme} onChange={handleChange}/> Kanada Jambonu
           </label>
           <label>
-            <input type="checkbox" value="tomato" /> Domates
+            <input type="checkbox" name="malzeme11" checked={form.malzeme} onChange={handleChange}/> Domates
           </label>
           <label>
-            <input type="checkbox" value="jalapeno" /> Jalepeno
+            <input type="checkbox" name="malzeme12" checked={form.malzeme} onChange={handleChange}/> Jalepeno
           </label>
 
           <p>İsminiz ?</p>
           <label>
-            <input type="text" name="name" placeholder="İsminizi girin" />
+            <input type="text" name="isim" placeholder="İsminizi girin" />
           </label>
 
           <p>Sipariş Notu</p>
