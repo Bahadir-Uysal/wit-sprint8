@@ -1,3 +1,4 @@
+import { Link, NavLink } from "react-router-dom/cjs/react-router-dom.min";
 import "./Header.css";
 
 export default function Header() {
@@ -6,8 +7,8 @@ export default function Header() {
       <div className="header-main">
         <h1>Teknolojik Yemekler</h1>
           <nav>
-            <a>Anasayfa</a>
-            <a>Sipariş Oluştur</a>
+            <Link to="/"><a>Anasayfa</a></Link>
+            <NavLink to="/orderpage"><a>Sipariş Oluştur</a></NavLink>      
           </nav>
       </div>
     </>

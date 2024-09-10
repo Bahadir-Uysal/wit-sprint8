@@ -8,13 +8,13 @@ function App() {
   return (
     <>
       <Switch>
-        <Route exact path="/">
+        <Route  exact path="/">
           <MainPage />
         </Route>
         <Route path="/orderPage">
           <OrderPage />
         </Route>
-        <Route path="orderConfirm">
+        <Route path="/orderConfirm">
           <OrderConfirm />
         </Route>
       </Switch>
