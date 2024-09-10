@@ -1,6 +1,7 @@
 import "./OrderPage.css";
 import Header from "./Header";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const initialForm = {
   isim: "",
@@ -41,7 +42,7 @@ const errorMessages = {
   isim: "Lütfen geçerli bir ad giriniz.",
   size: "Boyut seçiniz.",
   dough: "Lütfen hamur tipini seçiniz.",
-  malzemeler: "En az 4 adet ve en fazla 10 adet seçim yapınız.",
+  malzemeler: "Belirtilen usulde seçim yapınız.",
 };
 
 export default function Order() {
@@ -52,6 +53,39 @@ export default function Order() {
     dough: false,
     malzemeler: false,
   });
+  const [touched, setTouched] = useState({
+    isim: false,
+    size: false,
+    dough: false,
+    malzemeler: false,
+  })
+  const [isValid, setIsValid] = useState(false);
+
+  const handleValidation = () => {
+    const selectedMalzemeler = Object.values(form.malzemeler).filter(
+      Boolean
+    ).length;
+
+    const newErrors = {
+      isim: form.isim.trim().length < 3,
+      size: form.size === "",
+      dough: form.dough === "",
+      malzemeler: selectedMalzemeler < 3 || selectedMalzemeler > 10,
+    };
+
+    setErrors(newErrors);
+
+    const isValidForm =
+      !newErrors.isim &&
+      !newErrors.size &&
+      !newErrors.dough &&
+      !newErrors.malzemeler;
+    setIsValid(isValidForm);
+  };
+
+    useEffect(()=> {
+      handleValidation()
+    },[form,touched])
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
@@ -63,16 +97,6 @@ export default function Order() {
         [name]: checked,
       };
 
-      const selectedCount =
-        Object.values(updatedMalzemeler).filter(Boolean).length;
-
-      const isMalzemeError = selectedCount < 4 || selectedCount > 10;
-
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        malzemeler: isMalzemeError,
-      }));
-
       setForm({
         ...form,
         malzemeler: updatedMalzemeler,
@@ -82,29 +106,15 @@ export default function Order() {
         ...form,
         [name]: value,
       });
+      setTouched((prev) => ({ ...prev, [name]: true }));
     }
-
-    if (name === "isim") {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        isim: value.trim().length < 3,
-      }));
-    }
+    
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    const formIsValid =
-      form.isim.trim().length >= 3 &&
-      form.size &&
-      form.dough &&
-      !errors.malzemeler;
-
-    if (formIsValid) {
-      setIsValid(true);
-    } else {
-      setIsValid(false);
+    if (isValid) {
+      console.log("Sipariş Verildi.", form);
     }
   };
 
@@ -160,7 +170,7 @@ export default function Order() {
             />{" "}
             Büyük
           </label>
-
+          {errors.size && <p>{errorMessages.size}</p>}
           <p>Hamur Seç *</p>
           <label>
             <select onChange={handleChange} name="dough" value={form.dough}>
@@ -169,7 +179,7 @@ export default function Order() {
               <option value="kalın">Kalın</option>
             </select>
           </label>
-
+          {errors.dough && <p>{errorMessages.dough}</p>}
           <p>Ek Malzemeler</p>
           <p>En az 4 en fazla 10 malzeme seçebilirsiniz. 5tl</p>
           {malzemeList.map((malzeme, index) => (
@@ -179,10 +189,12 @@ export default function Order() {
                 name={malzeme}
                 checked={form.malzemeler[malzeme]}
                 onChange={handleChange}
+                value={malzeme}
               />
               {malzeme.charAt(0).toUpperCase() + malzeme.slice(1)}
             </label>
           ))}
+          {errors.malzemeler && <p>{errorMessages.malzemeler}</p>}
 
           <p>İsminiz ?</p>
           <label>
@@ -193,7 +205,7 @@ export default function Order() {
               onChange={handleChange}
               value={form.isim}
             />
-            {errors.isim && <span>{errorMessages.isim}</span>}
+            {errors.isim && <p>{errorMessages.isim}</p>}
           </label>
 
           <p>Sipariş Notu</p>
@@ -206,8 +218,9 @@ export default function Order() {
             ></textarea>
           </label>
 
-          {errors.malzemeler && <p>{errorMessages.malzemeler}</p>}
-          <button type="submit">Sipariş Ver</button>
+          <button type="submit" disabled={!isValid}>
+            Sipariş Ver
+          </button>
         </form>
       </main>
     </>
