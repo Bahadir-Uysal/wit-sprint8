@@ -41,6 +41,7 @@ describe('Order Page', () => {
         cy.get('[data-cy="checkboxes"]').eq(k).check()
       }
       cy.get('[data-cy="button-submit"]').should("not.be.disabled")
+      cy.get('[data-cy="button-submit"]').click()
     })
     
   })
