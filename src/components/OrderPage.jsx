@@ -40,7 +40,7 @@ const malzemeList = [
   "jalepeno",
 ];
 
-const errorMessages = {
+ const errorMessages = {
   isim: "Lütfen geçerli bir ad giriniz.",
   size: "Boyut seçiniz.",
   dough: "Lütfen hamur tipini seçiniz.",
@@ -163,6 +163,7 @@ export default function Order() {
           <p>Boyut Seç *</p>
           <label>
             <input
+              data-cy="radio-button"
               onChange={handleChange}
               name="size"
               type="radio"
@@ -206,6 +207,7 @@ export default function Order() {
           {malzemeList.map((malzeme, index) => (
             <label key={index}>
               <input
+                data-cy="checkboxes"
                 type="checkbox"
                 name={malzeme}
                 checked={form.malzemeler[malzeme]}
@@ -222,6 +224,7 @@ export default function Order() {
           <p>İsminiz ?</p>
           <label>
             <input
+              data-cy="ad-input"
               type="text"
               name="isim"
               placeholder="İsminizi girin"
@@ -256,7 +259,7 @@ export default function Order() {
               <span>{totalPrice}₺"</span>
             </p>
             
-              <button type="submit" disabled={!isValid}>
+              <button data-cy="button-submit" type="submit" disabled={!isValid}>
                 Sipariş Ver
               </button>
             
