@@ -3,6 +3,8 @@ import Header from "./Header";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+import {useHistory} from "react-router-dom"
+
 const initialForm = {
   isim: "",
   size: "",
@@ -61,6 +63,7 @@ export default function Order() {
   });
   const [isValid, setIsValid] = useState(false);
   const [totalPrice, setTotalPrice] = useState(85.5);
+  const history = useHistory();
 
   const handleValidation = () => {
     const selectedMalzemeler = Object.values(form.malzemeler).filter(
@@ -117,14 +120,22 @@ export default function Order() {
         ...form,
         [name]: value,
       });
+      setTouched((prev) => ({ ...prev, [name]: true }));
     }
-    setTouched((prev) => ({ ...prev, [name]: true }));
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     if (isValid) {
-      console.log("Sipariş Verildi.", form);
+      axios
+        .post("https://reqres.in/api/pizza", form)
+        .then((response) => {
+          console.log("Sipariş Özeti", response.data);
+          history.push("/orderConfirm")
+        })
+        .catch((err) => {
+          console.warn(err);
+        });
     }
   };
 
@@ -189,7 +200,7 @@ export default function Order() {
               <option value="kalın">Kalın</option>
             </select>
           </label>
-          {errors.dough && touched.dough && <p>{errorMessages.dough}</p>}
+          {errors.dough &&  <p>{errorMessages.dough}</p>}
           <p>Ek Malzemeler</p>
           <p>En az 4 en fazla 10 malzeme seçebilirsiniz. 5tl</p>
           {malzemeList.map((malzeme, index) => (
@@ -234,15 +245,21 @@ export default function Order() {
             <h4>Sipariş Toplamı</h4>
             <p>
               Seçimler
-              <span>{Object.values(form.malzemeler).filter((selected) => selected).length * 5 }₺</span>
+              <span>
+                {Object.values(form.malzemeler).filter((selected) => selected)
+                  .length * 5}
+                ₺
+              </span>
             </p>
             <p>
               Toplam
               <span>{totalPrice}₺"</span>
             </p>
-            <button type="submit" disabled={!isValid}>
-              Sipariş Ver
-            </button>
+            
+              <button type="submit" disabled={!isValid}>
+                Sipariş Ver
+              </button>
+            
           </div>
         </form>
       </main>

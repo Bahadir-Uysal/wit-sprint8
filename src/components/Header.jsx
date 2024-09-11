@@ -7,8 +7,8 @@ export default function Header() {
       <div className="header-main">
         <h1>Teknolojik Yemekler</h1>
           <nav>
-            <Link to="/"><a>Anasayfa</a></Link>
-            <NavLink to="/orderpage"><a>Sipariş Oluştur</a></NavLink>      
+            <Link to="/"><button>Anasayfa</button></Link>
+            <NavLink to="/orderpage"><button>Sipariş Oluştur</button></NavLink>      
           </nav>
       </div>
     </>
