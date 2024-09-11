@@ -58,8 +58,9 @@ export default function Order() {
     size: false,
     dough: false,
     malzemeler: false,
-  })
+  });
   const [isValid, setIsValid] = useState(false);
+  const [totalPrice, setTotalPrice] = useState(85.5);
 
   const handleValidation = () => {
     const selectedMalzemeler = Object.values(form.malzemeler).filter(
@@ -67,10 +68,10 @@ export default function Order() {
     ).length;
 
     const newErrors = {
-      isim: form.isim.trim().length < 3,
+      isim: form.isim.trim().length < 4,
       size: form.size === "",
       dough: form.dough === "",
-      malzemeler: selectedMalzemeler < 3 || selectedMalzemeler > 10,
+      malzemeler: selectedMalzemeler < 4 || selectedMalzemeler > 10,
     };
 
     setErrors(newErrors);
@@ -83,9 +84,19 @@ export default function Order() {
     setIsValid(isValidForm);
   };
 
-    useEffect(()=> {
-      handleValidation()
-    },[form,touched])
+  useEffect(() => {
+    handleValidation();
+    calculateTotalPrice();
+  }, [form]);
+
+  const calculateTotalPrice = () => {
+    const basePrice = 85.5;
+    const selectedMalzemelerCount = Object.values(form.malzemeler).filter(
+      (isSelected) => isSelected
+    ).length;
+    const extraPrice = selectedMalzemelerCount * 5;
+    setTotalPrice(basePrice + extraPrice);
+  };
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
@@ -106,9 +117,8 @@ export default function Order() {
         ...form,
         [name]: value,
       });
-      setTouched((prev) => ({ ...prev, [name]: true }));
     }
-    
+    setTouched((prev) => ({ ...prev, [name]: true }));
   };
 
   const handleSubmit = (event) => {
@@ -170,7 +180,7 @@ export default function Order() {
             />{" "}
             Büyük
           </label>
-          {errors.size && <p>{errorMessages.size}</p>}
+          {errors.size && touched.size && <p>{errorMessages.size}</p>}
           <p>Hamur Seç *</p>
           <label>
             <select onChange={handleChange} name="dough" value={form.dough}>
@@ -179,7 +189,7 @@ export default function Order() {
               <option value="kalın">Kalın</option>
             </select>
           </label>
-          {errors.dough && <p>{errorMessages.dough}</p>}
+          {errors.dough && touched.dough && <p>{errorMessages.dough}</p>}
           <p>Ek Malzemeler</p>
           <p>En az 4 en fazla 10 malzeme seçebilirsiniz. 5tl</p>
           {malzemeList.map((malzeme, index) => (
@@ -194,7 +204,9 @@ export default function Order() {
               {malzeme.charAt(0).toUpperCase() + malzeme.slice(1)}
             </label>
           ))}
-          {errors.malzemeler && <p>{errorMessages.malzemeler}</p>}
+          {errors.malzemeler && touched.malzemeler && (
+            <p>{errorMessages.malzemeler}</p>
+          )}
 
           <p>İsminiz ?</p>
           <label>
@@ -205,7 +217,7 @@ export default function Order() {
               onChange={handleChange}
               value={form.isim}
             />
-            {errors.isim && <p>{errorMessages.isim}</p>}
+            {errors.isim && touched.isim && <p>{errorMessages.isim}</p>}
           </label>
 
           <p>Sipariş Notu</p>
@@ -218,9 +230,20 @@ export default function Order() {
             ></textarea>
           </label>
 
-          <button type="submit" disabled={!isValid}>
-            Sipariş Ver
-          </button>
+          <div>
+            <h4>Sipariş Toplamı</h4>
+            <p>
+              Seçimler
+              <span>{Object.values(form.malzemeler).filter((selected) => selected).length * 5 }₺</span>
+            </p>
+            <p>
+              Toplam
+              <span>{totalPrice}₺"</span>
+            </p>
+            <button type="submit" disabled={!isValid}>
+              Sipariş Ver
+            </button>
+          </div>
         </form>
       </main>
     </>
