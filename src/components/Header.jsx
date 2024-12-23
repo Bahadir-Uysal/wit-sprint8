@@ -1,16 +1,15 @@
-import { Link, NavLink } from "react-router-dom/cjs/react-router-dom.min";
-import "./Header.css";
+import React from "react";
 
-export default function Header() {
+function Header() {
   return (
-    <>
-      <div className="header-main">
-        <h1>Teknolojik Yemekler</h1>
-          <nav>
-            <Link to="/"><button>Anasayfa</button></Link>
-            <NavLink to="/orderpage"><button>Sipariş Oluştur</button></NavLink>      
-          </nav>
+    <div>
+      <div className="bg-red h-[138px] flex justify-center items-center relative ">
+        <h1 className="font-londrina text-white text-4xl">
+          Teknolojik Yemekler
+        </h1>
       </div>
-    </>
+    </div>
   );
 }
+
+export default Header;

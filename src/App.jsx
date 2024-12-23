@@ -1,21 +1,31 @@
 import "./App.css";
-import OrderConfirm from "./components/OrderConfirm";
-import OrderPage from "./components/OrderPage";
-import MainPage from "./components/MainPage";
-import { Route, Switch } from "react-router-dom";
+import Header from "./components/Header";
+import Form from "./components/Form";
+import Home from "./components/Home";
+import Success from "./components/Success";
+import { Switch } from "react-router-dom";
+import { Route } from "react-router-dom/cjs/react-router-dom.min";
+import { useState } from "react";
 
 function App() {
+  const [formData, setFormData] = useState({});
+
   return (
     <>
       <Switch>
-        <Route  exact path="/">
-          <MainPage />
+        <Route exact path="/">
+          <Home />
         </Route>
-        <Route path="/orderPage">
-          <OrderPage />
-        </Route>
-        <Route path="/orderConfirm">
-          <OrderConfirm />
+
+        <Route
+          path="/order"
+          render={() => <Form setFormData={setFormData} />}
+        ></Route>
+        <Route
+          path="/success"
+          render={() => <Success formData={formData} />}
+        >
+          
         </Route>
       </Switch>
     </>
